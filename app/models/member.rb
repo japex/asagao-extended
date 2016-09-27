@@ -2,6 +2,7 @@ class Member < ActiveRecord::Base
   include EmailAddressChecker
 
   belongs_to :occupation
+  has_one :occupation_detail, dependent: :destroy
   has_many :entries, dependent: :destroy
   has_many :votes, dependent: :destroy
   has_many :voted_entries, through: :votes, source: :entry
