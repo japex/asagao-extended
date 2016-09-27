@@ -31,6 +31,8 @@ class Member < ActiveRecord::Base
 
   attr_accessor :password, :password_confirmation
 
+  accepts_nested_attributes_for :occupation_detail
+
   def password=(val)
     if val.present?
       self.hashed_password = BCrypt::Password.create(val)

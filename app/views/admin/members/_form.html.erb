@@ -39,6 +39,24 @@
     </td>
   </tr>
   <tr>
+    <th><%= Member.human_attribute_name(:occupation) %></th>
+    <td>
+      <% @occupations.each do |occupation| -%>
+        <%= form.radio_button :occupation_id, occupation.id %>
+        <%= form.label occupation.category %>
+        <br>
+        <% if occupation.needs_description -%>
+          <div id="occupation_description" <%= @member.occupation_id != occupation.id && :hidden %>>
+            <%= form.label :specifically %>
+            <%= form.fields_for :occupation_detail do |odf| %>
+              <%= odf.text_field :description %>
+            <% end -%>
+          </div>
+        <% end -%>
+      <% end -%>
+    </td>
+  </tr>
+  <tr>
     <th><%= form.label :birthday, for: "member_birthday_1i" %></th>
     <td><%= form.date_select :birthday,
               start_year: 1940, end_year: Time.now.year,

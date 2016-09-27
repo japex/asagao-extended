@@ -26,12 +26,14 @@ class Admin::MembersController < Admin::Base
   def new
     @member = Member.new(birthday: Date.new(1980, 1, 1))
     @member.build_image
+    @occupations = Occupation.all
   end
 
   # 更新フォーム
   def edit
     @member = Member.find(params[:id])
     @member.build_image unless @member.image
+    @occupations = Occupation.all
   end
 
   # 会員の新規登録
