@@ -42,6 +42,7 @@ class Admin::MembersController < Admin::Base
     if @member.save
       redirect_to [:admin, @member], notice: "会員を登録しました。"
     else
+      @occupations = Occupation.all
       render "new"
     end
   end
@@ -53,6 +54,7 @@ class Admin::MembersController < Admin::Base
     if @member.save
       redirect_to [:admin, @member], notice: "会員情報を更新しました。"
     else
+      @occupations = Occupation.all
       render "edit"
     end
   end
@@ -66,8 +68,9 @@ class Admin::MembersController < Admin::Base
 
   private
   def member_params
-    attrs = [:number, :name, :full_name, :gender, :birthday, :email,
+    attrs = [:number, :name, :full_name, :gender, :occupation_id, :birthday, :email,
       :password, :password_confirmation, :administrator]
+    attrs << { occupation_detail_attributes: :description }
     attrs << { image_attributes: [:_destroy, :id, :uploaded_image] }
     params.require(:member).permit(attrs)
   end
