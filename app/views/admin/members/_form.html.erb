@@ -43,7 +43,7 @@
     <td>
       <% @occupations.each do |occupation| -%>
         <%= form.radio_button :occupation_id, occupation.id %>
-        <%= form.label occupation.category %>
+        <%= form.label :occupation_id, occupation.category, value: occupation.id %>
         <br>
         <% if occupation.needs_description -%>
           <div id="occupation_description_<%= occupation.id %>"
