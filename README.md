@@ -1,3 +1,42 @@
+db/migrate/20160923020052_create_occupations.rb
+```ruby
+class CreateOccupations < ActiveRecord::Migration
+
+  def change
+    create_table :occupations do |t|
+      t.string  :category         , null: false
+      t.boolean :needs_description, null: false, default: false
+
+      t.timestamps null: false
+    end
+  end
+end
+```
+db/migrate/20160927014503_create_occupation_details.rb
+```ruby
+class AddOccupationIdToMembers < ActiveRecord::Migration
+
+  def change
+    add_column :members, :occupation_id, :integer
+  end
+end
+```
+db/migrate/20160923062303_add_occupation_id_to_members.rb
+```ruby
+class CreateOccupationDetails < ActiveRecord::Migration
+
+  def change
+    create_table :occupation_details do |t|
+      t.references :member
+      t.string     :description
+
+      t.timestamps null: false
+    end
+  end
+end
+```
+
+
 README
 ======
 
