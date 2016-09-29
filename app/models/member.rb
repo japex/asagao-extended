@@ -1,8 +1,11 @@
 class Member < ActiveRecord::Base
   include EmailAddressChecker
 
+  before_validation :skip_validation_of_occupation_description_if_not_needed
+
   belongs_to :occupation
   has_one :occupation_detail, dependent: :destroy
+  accepts_nested_attributes_for :occupation_detail
   has_many :entries, dependent: :destroy
   has_many :votes, dependent: :destroy
   has_many :voted_entries, through: :votes, source: :entry
@@ -31,8 +34,6 @@ class Member < ActiveRecord::Base
 
   attr_accessor :password, :password_confirmation
 
-  accepts_nested_attributes_for :occupation_detail
-
   def password=(val)
     if val.present?
       self.hashed_password = BCrypt::Password.create(val)
@@ -49,6 +50,13 @@ class Member < ActiveRecord::Base
     if email.present?
       errors.add(:email, :invalid) unless well_formed_as_email_address(email)
     end
+  end
+
+  def skip_validation_of_occupation_description_if_not_needed
+    unless occupation.needs_description
+      occupation_detail.skips_validations_for_description = true
+    end
+    true
   end
 
   class << self

@@ -41,10 +41,6 @@ class Admin::MembersController < Admin::Base
   # 会員の新規登録
   def create
     @member = Member.new(member_params)
-    #TODO: Move to before_save of Member?
-    unless @member.occupation.needs_description
-      @member.occupation_detail.skips_validations_for_description = true
-    end
     if @member.save
       redirect_to [:admin, @member], notice: "会員を登録しました。"
     else
@@ -57,10 +53,6 @@ class Admin::MembersController < Admin::Base
   def update
     @member = Member.find(params[:id])
     @member.assign_attributes(member_params)
-    #TODO: Move to before_save of Member?
-    unless @member.occupation.needs_description
-      @member.occupation_detail.skips_validations_for_description = true
-    end
     if @member.save
       redirect_to [:admin, @member], notice: "会員情報を更新しました。"
     else
