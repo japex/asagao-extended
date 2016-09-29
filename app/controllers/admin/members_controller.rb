@@ -1,4 +1,6 @@
 class Admin::MembersController < Admin::Base
+  before_action :set_occupations, only: [:new, :edit, :create, :update]
+
   # 会員一覧
   def index
     @members = Member.order("number")
@@ -27,7 +29,6 @@ class Admin::MembersController < Admin::Base
     @member = Member.new(birthday: Date.new(1980, 1, 1))
     @member.build_occupation_detail unless @member.occupation_detail
     @member.build_image
-    @occupations = Occupation.all
   end
 
   # 更新フォーム
@@ -35,7 +36,6 @@ class Admin::MembersController < Admin::Base
     @member = Member.find(params[:id])
     @member.build_occupation_detail unless @member.occupation_detail
     @member.build_image unless @member.image
-    @occupations = Occupation.all
   end
 
   # 会員の新規登録
@@ -44,7 +44,6 @@ class Admin::MembersController < Admin::Base
     if @member.save
       redirect_to [:admin, @member], notice: "会員を登録しました。"
     else
-      @occupations = Occupation.all
       render "new"
     end
   end
@@ -56,7 +55,6 @@ class Admin::MembersController < Admin::Base
     if @member.save
       redirect_to [:admin, @member], notice: "会員情報を更新しました。"
     else
-      @occupations = Occupation.all
       render "edit"
     end
   end
@@ -85,5 +83,9 @@ class Admin::MembersController < Admin::Base
     else
       raise NotFound
     end
+  end
+
+  def set_occupations
+    @occupations = Occupation.all
   end
 end
