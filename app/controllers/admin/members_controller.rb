@@ -25,6 +25,7 @@ class Admin::MembersController < Admin::Base
   # 新規作成フォーム
   def new
     @member = Member.new(birthday: Date.new(1980, 1, 1))
+    @member.build_occupation_detail unless @member.occupation_detail
     @member.build_image
     @occupations = Occupation.all
   end
@@ -32,6 +33,7 @@ class Admin::MembersController < Admin::Base
   # 更新フォーム
   def edit
     @member = Member.find(params[:id])
+    @member.build_occupation_detail unless @member.occupation_detail
     @member.build_image unless @member.image
     @occupations = Occupation.all
   end
