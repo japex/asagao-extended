@@ -45,6 +45,10 @@ class Member < ActiveRecord::Base
     entry && entry.author != self && !votes.exists?(entry_id: entry.id)
   end
 
+  def destroy_unnecessary_occupation_detail
+    occupation_detail.try(:destroy) unless occupation.needs_description
+  end
+
   private
   def check_email
     if email.present?

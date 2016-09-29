@@ -53,6 +53,7 @@ class Admin::MembersController < Admin::Base
     @member = Member.find(params[:id])
     @member.assign_attributes(member_params)
     if @member.save
+      @member.destroy_unnecessary_occupation_detail
       redirect_to [:admin, @member], notice: "会員情報を更新しました。"
     else
       render "edit"
