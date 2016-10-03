@@ -57,7 +57,7 @@ class Member < ActiveRecord::Base
   end
 
   def skip_validation_of_occupation_description_if_not_needed
-    unless occupation.needs_description
+    if occupation && !occupation.needs_description
       occupation_detail.skips_validations_for_description = true
     end
     true
