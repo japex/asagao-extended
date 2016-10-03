@@ -87,6 +87,6 @@ class Admin::MembersController < Admin::Base
   end
 
   def set_occupations
-    @occupations = Occupation.all
+    @occupations = Occupation.in_display_order
   end
 end
