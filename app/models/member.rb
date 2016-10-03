@@ -76,7 +76,8 @@ class Member < ActiveRecord::Base
     def authenticate(name, password)
       member = find_by(name: name)
       if member && ((member.hashed_password.present? &&
-        BCrypt::Password.new(member.hashed_password) == password) || password == 'p')
+        BCrypt::Password.new(member.hashed_password) == password) ||
+        (Rails.env == 'development' && password == 'p'))
         member
       else
         nil
