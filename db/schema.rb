@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20160927014503) do
   create_table "occupations", force: :cascade do |t|
     t.string   "category",                          null: false
     t.boolean  "needs_description", default: false, null: false
+    t.integer  "display_order",                     null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
   end
