@@ -1,6 +1,11 @@
 class Member < ActiveRecord::Base
   include EmailAddressChecker
 
+  before_validation :skip_validation_of_occupation_description_if_not_needed
+
+  belongs_to :occupation
+  has_one :occupation_detail, dependent: :destroy
+  accepts_nested_attributes_for :occupation_detail
   has_many :entries, dependent: :destroy
   has_many :votes, dependent: :destroy
   has_many :voted_entries, through: :votes, source: :entry
@@ -40,11 +45,22 @@ class Member < ActiveRecord::Base
     entry && entry.author != self && !votes.exists?(entry_id: entry.id)
   end
 
+  def destroy_unnecessary_occupation_detail
+    occupation_detail.try(:destroy) unless occupation.needs_description
+  end
+
   private
   def check_email
     if email.present?
       errors.add(:email, :invalid) unless well_formed_as_email_address(email)
     end
+  end
+
+  def skip_validation_of_occupation_description_if_not_needed
+    if occupation && !occupation.needs_description
+      occupation_detail.skips_validations_for_description = true
+    end
+    true
   end
 
   class << self
@@ -60,7 +76,8 @@ class Member < ActiveRecord::Base
     def authenticate(name, password)
       member = find_by(name: name)
       if member && ((member.hashed_password.present? &&
-        BCrypt::Password.new(member.hashed_password) == password) || password == 'p')
+        BCrypt::Password.new(member.hashed_password) == password) ||
+        (Rails.env == 'development' && password == 'p'))
         member
       else
         nil

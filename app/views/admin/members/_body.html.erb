@@ -20,6 +20,10 @@
     <td><%= @member.gender == 0 ? "男" : "女" %></td>
   </tr>
   <tr>
+    <th>職業</th>
+    <td><%= occupation_display(@member) %></td>
+  </tr>
+  <tr>
     <th>誕生日</th>
     <td><%= @member.birthday.try(:strftime, "%Y年%m月%d日") %></td>
   </tr>

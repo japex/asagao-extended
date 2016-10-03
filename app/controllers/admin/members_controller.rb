@@ -1,4 +1,6 @@
 class Admin::MembersController < Admin::Base
+  before_action :set_occupations, only: [:new, :edit, :create, :update]
+
   # 会員一覧
   def index
     @members = Member.order("number")
@@ -25,12 +27,14 @@ class Admin::MembersController < Admin::Base
   # 新規作成フォーム
   def new
     @member = Member.new(birthday: Date.new(1980, 1, 1))
+    @member.build_occupation_detail unless @member.occupation_detail
     @member.build_image
   end
 
   # 更新フォーム
   def edit
     @member = Member.find(params[:id])
+    @member.build_occupation_detail unless @member.occupation_detail
     @member.build_image unless @member.image
   end
 
@@ -49,6 +53,7 @@ class Admin::MembersController < Admin::Base
     @member = Member.find(params[:id])
     @member.assign_attributes(member_params)
     if @member.save
+      @member.destroy_unnecessary_occupation_detail
       redirect_to [:admin, @member], notice: "会員情報を更新しました。"
     else
       render "edit"
@@ -64,8 +69,9 @@ class Admin::MembersController < Admin::Base
 
   private
   def member_params
-    attrs = [:number, :name, :full_name, :gender, :birthday, :email,
+    attrs = [:number, :name, :full_name, :gender, :occupation_id, :birthday, :email,
       :password, :password_confirmation, :administrator]
+    attrs << { occupation_detail_attributes: :description }
     attrs << { image_attributes: [:_destroy, :id, :uploaded_image] }
     params.require(:member).permit(attrs)
   end
@@ -78,5 +84,9 @@ class Admin::MembersController < Admin::Base
     else
       raise NotFound
     end
+  end
+
+  def set_occupations
+    @occupations = Occupation.in_display_order
   end
 end
